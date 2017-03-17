@@ -14,20 +14,8 @@ import android.widget.TextView;
 
 public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHolder> {
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView bookmarkName;
-        TextView bookmarkUrl;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            bookmarkName = (TextView) itemView.findViewById(R.id.bookmark_name);
-            bookmarkUrl = (TextView) itemView.findViewById(R.id.bookmark_url);
-        }
-    }
-
     private Cursor cursor;
     private Context context;
-
     public BookmarkAdapter(Context context, Cursor cursor) {
         this.cursor = cursor;
         this.context = context;
@@ -40,7 +28,6 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
         this.cursor = cursor;
         this.notifyDataSetChanged();
     }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -69,6 +56,27 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
             return cursor.getCount();
         else
             return 0;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView bookmarkName;
+        TextView bookmarkUrl;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            bookmarkName = (TextView) itemView.findViewById(R.id.bookmark_name);
+            bookmarkUrl = (TextView) itemView.findViewById(R.id.bookmark_url);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = ViewHolder.this.getAdapterPosition();
+                    cursor.moveToPosition(position);
+                    //Retrieve url
+                    String url = cursor.getString(2);
+                }
+            });
+        }
     }
     //recyrcler view is now ready
 }

@@ -1,5 +1,7 @@
 package pavlosnicolaou.bookmarks;
 
+import android.database.Cursor;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -33,13 +35,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        BookmarksDBHelper dbHelper = BookmarksDBHelper.getInstance(this);
+
         bookmarkListView = (RecyclerView) findViewById(R.id.bookmarks_list);
-        adapter = new BookmarkAdapter();
+        //adapter = new BookmarkAdapter(this, null);
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         bookmarkListView.setLayoutManager(layoutManager);
-        bookmarkListView.setAdapter(adapter);
+        //bookmarkListView.setAdapter(adapter);
+
+        try {
+            dbHelper.open();
+            Cursor cursor = dbHelper.getBookmarks();
+
+            //Create the adapter
+            adapter = new BookmarkAdapter(this, cursor);
+            bookmarkListView.setAdapter(adapter);
+        } catch (SQLException e) {
+            //Something wrong with the database
+            e.printStackTrace();
+        }
     }
 
     @Override
